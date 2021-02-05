@@ -28,6 +28,15 @@ class ItemsController < ApplicationController
         render json: {message: "successfully deleted #{item.name}"}
     end
 
+    def update 
+        item = Item.find(params[:id])
+        if item.update(item_params)
+            render json: ItemSerializer.new(item)
+        else
+            render json: {error: "could not save"}
+        end
+    end
+
     private 
 
     def item_params
