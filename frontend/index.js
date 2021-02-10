@@ -4,6 +4,7 @@ const form = document.getElementById('item-form')
 const priceInput = document.getElementById('item-price')
 const nameInput = document.getElementById('item-name')
 const descriptionInput = document.getElementById('item-description')
+const sortBtn = document.getElementById('sort')
 
 form.addEventListener('submit', handleSubmit)
 
@@ -32,29 +33,26 @@ function handleSubmit(e){
     .then(json => renderItem(json.data))
 }
 
-function getItems(){
-    fetch('http://localhost:3000/items')
-    // .then(function(r){
-    //     return r.json()
-    // })   // this is the same as the .then on line 8
-    .then(r => r.json())
-    .then(renderItems)
+// function getItems(){
+//     fetch('http://localhost:3000/items')
+//     // .then(function(r){
+//     //     return r.json()
+//     // })   // this is the same as the .then on line 8
+//     .then(r => r.json())
+//     .then(renderItems)
 
-}
+// }
 
 
 
-function renderItems(arg){
-    const items = arg["data"]
-    items.forEach(element => {
-        renderItem(element)
-    })
-}
+// function renderItems(arg){
+//     const items = arg["data"]
+//     items.forEach(element => {
+//         renderItem(element)
+//     })
+// }
 
-function renderItem(item){
-    const li = document.createElement('li')
-    li.dataset["id"] = item.id
-    li.id = `item-${item.id}`
+function renderLiHTML(li, item){
     li.innerHTML = `
         <div data-id="${item.id}">
             $<span class="price">${item.attributes.price}</span>
@@ -64,6 +62,13 @@ function renderItem(item){
         <button class="edit" data-id="${item.id}">Edit</button>
         <button class="delete" data-id="${item.id}">Delete</button>
     `
+}
+
+function renderItem(item){
+    const li = document.createElement('li')
+    li.dataset["id"] = item.id
+    li.id = `item-${item.id}`
+    renderLiHTML(li, item)
     list.appendChild(li)
     li.addEventListener('click', handleLiClick)
     
@@ -72,11 +77,65 @@ function renderItem(item){
 
 }
 
-function handleLiClick(e){
-    if(e.target.innerText === "Edit"){
+// function handleLiClick(e){
+//     if(e.target.innerText === "Edit"){
+//          // change the button from edit to save
+//          e.target.innerText = "Save"
+//          // replace the div with different input tags 
+//          createEditFields(e.target)
+//     } else if (e.target.innerText === "Delete"){
+//         deleteItem(e)
+//     } else if(e.target.innerText === "Save"){
+//         e.target.innerText = "Edit"
+//         // save this info to the DB
+//         // turn all input fields back into spans
+//         saveUpdatedItem(e.target)
+//     }
+// }
 
-    } else if (e.target.innerText === "Delete"){
-        deleteItem(e)
+// function saveUpdatedItem(saveBtn){
+//     const li = saveBtn.parentElement
+//     const id = li.dataset.id
+//     const priceInput = li.querySelector(".edit-price")
+//     const nameInput = li.querySelector(".edit-name")
+//     const descriptionInput = li.querySelector(".edit-description")
+   
+//     // get ready to send a patch request 
+//     // config object 
+//     // data that we want to send
+//     //make our params hash
+//    const itemInfo = {
+//         price:  priceInput.value,
+//         name: nameInput.value,
+//         description: descriptionInput.value
+//     }
+
+//     const configObj = {
+//         method: 'PATCH',
+//         headers: {
+//             "Content-Type": "application/json",
+//             Accept: "application/json"
+//         },
+//         body: JSON.stringify(itemInfo)
+//     }
+
+//     // pessimistic rendering 
+//     fetch(`http://localhost:3000/items/${id}`, configObj)
+//     .then(r => r.json())
+//     .then(json => {
+//         // use this json data to update the innerHTML of that div
+//         renderLiHTML(li, json.data)
+//     })
+// }
+
+function createEditFields(editBtn){
+    const li = editBtn.parentElement
+    const div = editBtn.parentElement.children[0]
+
+    for(const e of div.children){
+        let inputValue = e.innerText
+        let name = e.classList[0]
+        e.outerHTML = `<input type="text" class="edit-${name}" value="${inputValue}">`
     }
 }
 
@@ -95,7 +154,10 @@ function deleteItem(e){
     
     fetch(`http://localhost:3000/items/${id}`, configObj)
         .then(r => r.json())
-        .then(json => alert(json.message))
+        .then(json => {
+            debugger
+            alert(json.message)
+        })
 
 }
 
@@ -105,4 +167,7 @@ function deleteItem(e){
 
 
 
-getItems()
+// getItems()
+ItemApi.fetchItems()
+
+sortBtn.addEventListener('click', Item.sort)
