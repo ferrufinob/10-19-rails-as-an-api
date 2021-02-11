@@ -19,12 +19,17 @@ class ItemApi {
     }
 
     createItem(){
+
         const itemInfo = {
-            price:  priceInput.value,
-            name: nameInput.value,
-            description: descriptionInput.value
+            item: {
+                price:  priceInput.value,
+                name: nameInput.value,
+                description: descriptionInput.value,
+                // category_id: dropdown.value
+                category_name: catNameInput.value
+            } 
        }
-    
+       console.log(itemInfo)
        const configObj = {
            method: 'POST',
            headers: {
@@ -39,8 +44,16 @@ class ItemApi {
         .then(r => r.json())
         .then(json => {
             // renderItem(json.data)
+            debugger
             const i = new Item({id: json.data.id, ...json.data.attributes})
             i.attachToDom()
+          
+       
+           if(!Category.all.find((c) => c.id == i.categoryId)){
+               let catObj = new Category({id: i.categoryId, name: json.data.attributes.category_name})
+               catObj.addToDom()
+               catObj.addToDropDown()
+            }
         })
     }
 
@@ -79,7 +92,7 @@ class ItemApi {
             }
         }
         
-        fetch(`${this.baseURL}/${id}`, configObj)
+        fetch(`${this.baseUrl}/${id}`, configObj)
             .then(r => r.json())
             .then(json => alert(json.message))
     }

@@ -15,7 +15,7 @@ class Item{
         this.price = price 
         this.description = description
         this.id = id 
-        this.category_id = category_id
+        this.categoryId = category_id
 
         // setup the html element that will contain the item
         this.element = document.createElement('li')
@@ -27,6 +27,45 @@ class Item{
         // remembering all the items 
         Item.all.push(this)
     }
+
+    static filterByCategory(filteredCategory){
+        // display only the items in the active category
+        // if no categories are active, display all
+        if(filteredCategory){
+            for(const item of Item.all){
+                if(item.categoryId === parseInt(filteredCategory.id)){
+                    //unhide 
+                    item.element.style.display = "";
+                }else{
+                    //hide element
+                    item.element.style.display = "none";
+                }
+            }
+
+
+            // const filteredItems = Item.all.filter((item) => {
+            //     return item.category_id === parseInt(filteredCategory.id)
+            // }) 
+
+            // // only the filtered items appear on the DOM
+            // // remove all things from DOM
+            // Item.container.innerHTML = ''
+            // // use our attach to dom and put the filtered ones back on
+            // for(const item of filteredItems){
+            //     item.attachToDom()
+            // }
+        } else {
+              // remove all things from DOM
+            //   Item.container.innerHTML = ''
+              // use our attach to dom and put all the itemso back on
+              for(const item of Item.all){
+                //   item.attachToDom()
+                item.element.style.display = ""
+              }
+        }
+    }
+
+
 
     // arrow function b/c it is used as a callback in an event listener
     handleLiClick = (e) => {
