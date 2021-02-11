@@ -43,5 +43,45 @@ class ItemApi {
             i.attachToDom()
         })
     }
+
+    sendPatch = (item) => {
+        debugger
+        let {price, name, description} = item
+        const itemInfo = {
+            price,
+            name,
+            description
+        }
+
+        const configObj = {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify(itemInfo)
+        }
+       
+        fetch(`${this.baseUrl}/${item.id}`, configObj)
+        .then(r => r.json())
+        .then(json => {
+            // we are optomistically rendering here since we don't use the json response
+            item.render()
+        })
+    }
+
+    deleteItem = (id) => {
+        const configObj = {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            }
+        }
+        
+        fetch(`${this.baseURL}/${id}`, configObj)
+            .then(r => r.json())
+            .then(json => alert(json.message))
+    }
 }
 

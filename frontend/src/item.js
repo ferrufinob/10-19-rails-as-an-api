@@ -15,6 +15,7 @@ class Item{
         this.price = price 
         this.description = description
         this.id = id 
+        this.category_id = category_id
 
         // setup the html element that will contain the item
         this.element = document.createElement('li')
@@ -30,10 +31,40 @@ class Item{
     // arrow function b/c it is used as a callback in an event listener
     handleLiClick = (e) => {
         if(e.target.innerText === "Edit"){
-            console.log("edit")
+            e.target.innerText = "Save"
+            this.createEditFields(e.target)
         } else if (e.target.innerText === "Delete"){
-            deleteItem(e)
+            this.deleteItem(e)
+        } else if(e.target.innerText === "Save"){
+            e.target.innerText = "Edit"
+            // save this info to the DB
+            // turn all input fields back into spans
+            this.saveUpdatedItem()
         }
+    }
+
+    createEditFields = (editBtn) =>{
+        const li = this.element
+        const div = this.element.querySelector('div')
+    
+        for(const e of div.children){
+            let inputValue = e.innerText
+            let name = e.classList[0]
+            e.outerHTML = `<input type="text" class="edit-${name}" value="${inputValue}">`
+        }
+    }
+
+    deleteItem = (e) => {
+        this.element.remove() // remove it before the fetch request 
+        itemApi.deleteItem(this.id)
+    }
+
+    saveUpdatedItem = () => {
+        this.price = this.element.querySelector(".edit-price").value
+        this.name = this.element.querySelector(".edit-name").value
+        this.description = this.element.querySelector(".edit-description").value
+    
+       itemApi.sendPatch(this)
     }
 
     render(){
@@ -53,7 +84,10 @@ class Item{
         this.render()
         Item.container.appendChild(this.element)
         // Item.container.appendChild(this.render())
+
+        // adding the event listener could be placed here instead of the constructor function
     }
+
     
     
     

@@ -7,6 +7,8 @@
    </head>
    <body>
        <h1>Our Grocery Store</h1>
+       <h2>Filter by Category:</h2>
+       <div id="cat-container"></div>
        <h2>Here are all the Items:</h2>
        <ul id="item-list">
        </ul>
@@ -19,9 +21,15 @@
            <input type="text" name="description" id="item-description"><br><br>
            <label for="item-price">Price:</label>
            <input type="number" name="price" id="item-price" min="0" step=".01"><br><br>
+           <label for="cat-dropdown">Category:</label>
+           <select name="category_id" id="cat-dropdown">
+
+           </select><br><br>
            <input type="submit" value="Create">
        </form>
 
+       <script src="src/category.js" type="text/javascript"></script>
+       <script src="src/categoryApi.js" type="text/javascript"></script>
        <script src="src/item.js" type="text/javascript"></script>
        <script src="src/itemApi.js" type="text/javascript"></script>
        <script src="index.js" type="text/javascript"></script>
